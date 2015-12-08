@@ -1,20 +1,26 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <iostream>
-#include "window.h"
 #include "Cluster.h"
 #include "Particle.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <cmath>
 #include <GL/glut.h>
+#include <cmath>
+#include <muParser.h>
+#include <muParserBase.h>
+#include <string>
 #include <vector>
+#include "window.h"
+
 #define ESCAPE 27
 #define KEY_W 119
 #define KEY_A 97
 #define KEY_S 115
 #define KEY_D 100
 using namespace std;
+using namespace mu;
 
 int window;
 float offx=1.5f;
@@ -23,13 +29,23 @@ float offz=-6.0f;
 bool keys[256];
 float phi=0;
 float thet=0;
+string gravityx,gravityy,gravityz;
+Parser parsex;
+Parser parsey;
+Parser parsez;
 //vector<Particle> display;
 Cluster clusters[CLUSTERVAL][CLUSTERVAL][CLUSTERVAL];
-Window::Window(Cluster clu[CLUSTERVAL][CLUSTERVAL][CLUSTERVAL]){
+Window::Window(Cluster clu[CLUSTERVAL][CLUSTERVAL][CLUSTERVAL],string gravx, string gravy, string gravz){
   for(int a = 0; a<CLUSTERVAL;a++)
     for(int b = 0;b<CLUSTERVAL;b++)
       for(int c =0;c<CLUSTERVAL;c++)
 	clusters[a][b][c]=clu[a][b][c];
+  gravityx=gravx;
+  gravityy=gravy;
+  gravityz=gravz;
+  parsex.SetExpr(gravityx);
+  parsey.SetExpr(gravityy);
+  parsez.SetExpr(gravityz);
 }
 void Window::init(int width, int height){
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -43,11 +59,27 @@ void Window::init(int width, int height){
 }
 
 void phys(){
-    for(int a = 0;a<CLUSTERVAL;a++){
+   double x=0,y=0,z=0;
+   parsex.ParserBase::DefineVar("x",&x);
+   parsex.ParserBase::DefineVar("y",&y);
+   parsex.ParserBase::DefineVar("z",&z);
+
+   parsey.ParserBase::DefineVar("x",&x);
+   parsey.ParserBase::DefineVar("y",&y);
+   parsey.ParserBase::DefineVar("z",&z);
+
+   parsez.ParserBase::DefineVar("x",&x);
+   parsez.ParserBase::DefineVar("y",&y);
+   parsez.ParserBase::DefineVar("z",&z);
+   for(int a = 0;a<CLUSTERVAL;a++){
       for(int b = 0;b<CLUSTERVAL;b++){
         for(int c = 0;c<CLUSTERVAL;c++){
 	  for(unsigned long d = 0;d<clusters[a][b][c].particles.size();d++){
-	    if(clusters[a][b][c].particles.at(d).x<0
+	    x=clusters[a][b][c].particles.at(d).x-CLUSTERVAL*5;
+	    y=clusters[a][b][c].particles.at(d).y-CLUSTERVAL*5;
+	    z=clusters[a][b][c].particles.at(d).z-CLUSTERVAL*5;
+	    
+	     if(clusters[a][b][c].particles.at(d).x<0
 	       || clusters[a][b][c].particles.at(d).x>=10*CLUSTERVAL)
 	      clusters[a][b][c].particles.at(d).vx*=-1;
 	    if(clusters[a][b][c].particles.at(d).y<0
@@ -55,8 +87,12 @@ void phys(){
 	      clusters[a][b][c].particles.at(d).vy*=-1;
 	    if(clusters[a][b][c].particles.at(d).z<0
 	       || clusters[a][b][c].particles.at(d).z>=10*CLUSTERVAL)
-	      clusters[a][b][c].particles.at(d).vz*=-1;
+	       clusters[a][b][c].particles.at(d).vz*=-1;
 	    clusters[a][b][c].particles.at(d).updatelocation();
+
+	     clusters[a][b][c].particles.at(d).vx+=parsex.Eval();
+	    clusters[a][b][c].particles.at(d).vy+=parsey.Eval();
+	    clusters[a][b][c].particles.at(d).vz+=parsez.Eval();
           }
         }
       }

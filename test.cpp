@@ -24,7 +24,8 @@ int main(int args, char **args1){
       }
     }
   }
-  Window w (clusters);
+  //Window w (clusters,"-y/(x^2+y^2)","x/(x^2+y^2)","0");
+  Window w (clusters,"abs(y)/y/100","0","0");
   w.start(args, args1);
 }
 

@@ -5,6 +5,7 @@
 #include "Cluster.h"
 #include <vector>
 #include "Particle.h"
+#include <string>
 #define CLUSTERVAL 20
 
 using namespace std;
@@ -16,7 +17,7 @@ class Window
  public:
   void start(int argc, char **argv);
   void update(vector<Particle> &p);
-  Window(Cluster clu[CLUSTERVAL][CLUSTERVAL][CLUSTERVAL]);
+  Window(Cluster clu[CLUSTERVAL][CLUSTERVAL][CLUSTERVAL], string gravx, string gravy, string gravz);
 
 };
 #endif
