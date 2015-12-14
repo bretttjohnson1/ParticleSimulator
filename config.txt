@@ -1,0 +1,14 @@
+#IFIELD is the initial vector field, leave as rand for random values or write functions of x and y#VFIELD is the working vector field, it is the same as IFIELD, but it increments the x,y,z velocities by its function value every tick. basically acceleration field
+#SIZE is fairly self explanetory, dimensions of the rectangular prism in x,y,z that houses the points
+#PARTICLES is the number of particles
+IFIELDX:rand
+IFIELDY:rand
+IFIELDY:rand
+VFIELDX:0
+VFIELDY:0
+VFIELDZ:0
+XSIZE:100
+YSIZE:100
+ZSIZE:100
+PARTICLES:64000
+
