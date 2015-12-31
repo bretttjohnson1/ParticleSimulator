@@ -6,4 +6,5 @@ extern int clustervalx;
 extern int clustervaly;
 extern int clustervalz;
 extern bool wrapx,wrapy,wrapz;
+extern double speed;
 #endif

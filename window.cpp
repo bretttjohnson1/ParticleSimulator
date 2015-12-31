@@ -119,6 +119,36 @@ void phys(string gravityx, string gravityy,string gravityz, int quad, Cluster *c
 	    y=clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).y-ysize/2;
 	    z=clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).z-zsize/2;
 
+	    double forcex=0,forcey=0,forcez=0;
+	    for(int i=a-1;i<=a+1;i++)
+	      for(int j=b-1;j<=b+1;j++)
+		for(int k=c-1;k<=c+1;k++)
+		  if(i>=0 && j>=0 && k>=0 && i<clustervalx && j<clustervaly && k<clustervalz)
+		    for(unsigned long l=0;l<clusters[i*clustervaly*clustervalz+j*clustervalz+k].particles.size();l++){
+		      double disx=clusters[i*clustervaly*clustervalz+j*clustervalz+k].particles.at(l).x
+			-clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).x;
+		      double disy=clusters[i*clustervaly*clustervalz+j*clustervalz+k].particles.at(l).
+			y-clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).y;
+		      double disz=clusters[i*clustervaly*clustervalz+j*clustervalz+k].particles.at(l).z
+			-clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).z;
+		      if(!(disx==0 && disy==0 && disz==0)){
+			double dist = sqrt(disx*disx+disy*disy+disz*disz);
+			if(dist!=0){
+			forcex+=(2/(dist*dist+.02)-1/((dist-2)*(dist-2)+1.5))*-1*disx/dist;
+			forcey+=(2/(dist*dist+.02)-1/((dist-2)*(dist-2)+1.5))*-1*disy/dist;
+			forcez+=(2/(dist*dist+.02)-1/((dist-2)*(dist-2)+1.5))*-1*disz/dist;
+			}
+		      }
+		      
+		    }
+	    
+	    //cout<<forcex;
+	       clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vx+=forcex;
+	       clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vy+=forcey;
+	       clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vz+=forcez;
+		
+
+	    
 	    //edge checking if wrapxyz=true, particles loop from one side to another
 	    //if wrapxyz=false particles bounce off the boundaries
 	    if(!wrapx){
@@ -160,11 +190,10 @@ void phys(string gravityx, string gravityy,string gravityz, int quad, Cluster *c
 	      if(clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).z>zsize)
 		clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).z=0;
 	    }
-	    clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).updatelocation();
-
 	    clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vx+=parsex.Eval()/100;
 	    clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vy+=parsey.Eval()/100;
 	    clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vz+=parsez.Eval()/100;
+	    clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).updatelocation();
           }
         }
       }
@@ -182,16 +211,18 @@ void physics(){
 	  // cout<<clusterz<<"\n";
 	  if(clusterx<clustervalx && clustery<clustervaly && clusterz<clustervalz && clusterx>=0 && clustery>=0 && clusterz>=0)
 	  if(clusterx!=a ||clustery!=b || clusterz!=c){
-	    double x = clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).x;
+	    /*double x = clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).x;
 	    double y = clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).y;
 	    double z = clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).z;
 	    double vx = clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vx;
 	    double vy = clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vy;
-	    double vz = clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vz;
-	    clusters[clusterx*clustervaly*clustervalz+clustery*clustervalz+clusterz].particles.push_back(Particle(x,y,z,vx,vy,vz));
-	    clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.erase(clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.begin()+d);
+	    double vz = clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vz;*/
+	    clusters[clusterx*clustervaly*clustervalz+clustery*clustervalz+clusterz].particles.push_back(clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles[d]);
+	    Particle tmp = clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles[d];
+	    clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles[d]=clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles[clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.size()-1];
+	    clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles[clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.size()-1]=tmp;
+	    clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.pop_back();
 	    d--;
-	    
 	  }
 	}
 
@@ -209,24 +240,24 @@ void physics(){
 
 void moveandrotate(){
   if(keys[32]){
-    offy-=.05;
+    offy-=.05+keys[(int)'m'];
   }
   if(keys[(int)'c'])
-    offy+=.05;
+    offy+=.05+keys[(int)'m'];
   if(keys[(int)'w']){
-    offz+=.05;
+    offz+=.05+keys[(int)'m'];
     //keys[(int)'w']=false;
   }
   if(keys[(int)'s']){
-    offz-=.05;
+    offz-=.05+keys[(int)'m'];
     //keys[(int)'s']=false;
   }
   if(keys[(int)'d']){
-    offx-=.05;
+    offx-=.05+keys[(int)'m'];
     //keys[(int)'d']=false;
   }
   if(keys[(int)'a']){
-    offx+=.05;
+    offx+=.05+keys[(int)'m'];
     //keys[(int)'a']=false;
   }
   if(keys[(int)'j'])
@@ -249,7 +280,7 @@ void draw(){
   gettimeofday(&end,NULL);
   // cout<<end.tv_usec-begin.tv_usec<<"\n"; 
   glTranslatef(offx,offy,offz);
-  glScalef(1.0/clustervalx,1.0/clustervaly,1.0/clustervalz);
+  glScalef(.01/(pow(xsize*ysize*zsize,1/3)+1),.01/(pow(xsize*ysize*zsize,1/3)+1),.01/(pow(xsize*ysize*zsize,1/3)+1));
   glRotatef(thet,0,1,0);
   // glRotatef(thet,cos(thet)*sin(phi),sin(thet)*sin(phi),cos(phi));
   
