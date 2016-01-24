@@ -288,32 +288,13 @@ void draw(){
   gettimeofday(&start, NULL);
 
   
-   float colmax=-1;
-   float colmin=100000000;
-   for(int a = 0; a<clustervalx;a++)
-    for(int b = 0;b<clustervaly;b++)
-      for(int c =0;c<clustervalz;c++)
-	for(unsigned long d = 0;d<clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.size();d++){
-	  float col = (clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vx
-		       *clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vx
-		       +clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vy
-		       *clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vy
-		       +clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vz
-		       *clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vz);
-	  if(col>=colmax)colmax=col;
-	  if(col<=colmin)colmin=col;
-	}
-  
    gettimeofday(&stop,NULL);
    // cout<<stop.tv_usec-start.tv_usec<<"\n";
   for(int a = 0; a<clustervalx;a++)
     for(int b = 0;b<clustervaly;b++)
       for(int c =0;c<clustervalz;c++)
 	for(unsigned long d = 0;d<clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.size();d++){
-	  float col = (clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vx*clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vx
-	    +clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vy*clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vy
-			   +clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vz*clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).vz);
-	  glColor3f((col-colmin)/(colmax-colmin),0,1.0f-(col-colmin)/(colmax-colmin));
+	  glColor3f(0,255,0);
 	   glBegin(GL_POINTS);
 	  glVertex3f(((float)(clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).x-xsize/2)),
 		     ((float)(clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).y-ysize/2)),

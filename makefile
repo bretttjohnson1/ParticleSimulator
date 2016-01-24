@@ -1,9 +1,9 @@
 all:run
 
-run:window.o test.o Particle.o Cluster.o
-	g++ window.o test.o Particle.o  Cluster.o -O2 -g -std=c++0x -lpthread -lmuparser -lGL -lglut -lGLU -o run
+run: window.o test.o Particle.o Cluster.o
+	g++ window.o test.o Particle.o Cluster.o -O2 -g -std=c++0x -lpthread -lmuparser -lGL -lglut -lGLU -o run
 test.o: test.cpp window.h globals.h
-	g++ -c test.cpp 
+	g++ -c test.cpp -lmuparser 
 window.o: window.cpp window.h
 	g++ -c window.cpp -std=c++0x -O2 -g -lpthread -lmuparser -lGL -lglut -lGLU
 Particle.o: Particle.cpp Particle.h
