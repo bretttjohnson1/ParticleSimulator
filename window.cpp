@@ -132,11 +132,12 @@ void phys(string gravityx, string gravityy,string gravityz, int quad, Cluster *c
 		      double disz=clusters[i*clustervaly*clustervalz+j*clustervalz+k].particles.at(l).z
 			-clusters[a*clustervaly*clustervalz+b*clustervalz+c].particles.at(d).z;
 		      if(!(disx==0 && disy==0 && disz==0)){
-			double dist = sqrt(disx*disx+disy*disy+disz*disz);
+			double dist = sqrt(disx*disx+disy*disy+disz*disz)/3;
+			double realdist = sqrt(disx*disx+disy*disy+disz*disz);
 			if(dist!=0){
-			forcex+=(2/(dist*dist+.02)-1/((dist-2)*(dist-2)+1.5))*-1*disx/dist;
-			forcey+=(2/(dist*dist+.02)-1/((dist-2)*(dist-2)+1.5))*-1*disy/dist;
-			forcez+=(2/(dist*dist+.02)-1/((dist-2)*(dist-2)+1.5))*-1*disz/dist;
+			forcex+=(2/(dist*dist+.02)-1/((dist-2)*(dist-2)+1.5))*-1*disx/realdist;
+			forcey+=(2/(dist*dist+.02)-1/((dist-2)*(dist-2)+1.5))*-1*disy/realdist;
+			forcez+=(2/(dist*dist+.02)-1/((dist-2)*(dist-2)+1.5))*-1*disz/realdist;
 			}
 		      }
 		      
