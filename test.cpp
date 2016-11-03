@@ -5,9 +5,9 @@
 #include <unistd.h>
 #include <muParser.h>
 #include <muParserBase.h>
-#include "Particle.h"
-#include "Cluster.h"
-#include "window.h"
+#include "Particle.hpp"
+#include "Cluster.hpp"
+#include "window.hpp"
 #include <vector>
 #include <math.h>
 #include <fstream>
@@ -138,9 +138,9 @@ int main(int args, char **args1){
 	for(int d = 0;d<1;d++){
 	  x=((double)a)*xsize/((double)clustervalx)+((double)rand())/((double)RAND_MAX)*xsize/((double)clustervalx)-xsize/2;
 	  y=((double)b)*ysize/((double)clustervaly)+((double)rand())/((double)RAND_MAX)*ysize/((double)clustervaly)-ysize/2;
-	  z=((double)c)*zsize/((double)clustervalz)+((double)rand())/((double)RAND_MAX)*zsize/((double)clustervalx)-zsize/2;  
+	  z=((double)c)*zsize/((double)clustervalz)+((double)rand())/((double)RAND_MAX)*zsize/((double)clustervalx)-zsize/2;
 	  clusters[a*clustervaly*clustervalz+b*clustervalz+c].
-	    
+
 	    particles.push_back(Particle(x+xsize/2,y+ysize/2,z+zsize/2
 					 ,initx.Eval()
 					 ,inity.Eval()
@@ -152,4 +152,3 @@ int main(int args, char **args1){
   Window w (clusters,vfieldx,vfieldy,vfieldz);
   w.start(args, args1);
 }
-

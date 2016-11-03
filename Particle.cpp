@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Particle.h"
+#include "Particle.hpp"
 #include "globals.h"
 using namespace std;
 
@@ -11,7 +11,6 @@ using namespace std;
     this->vx=vx;
     this->vy=vy;
     this->vz=vz;
-
   }
 void Particle::updatelocation(){
     x+=vx*speed;
@@ -27,6 +26,5 @@ void Particle::addforce(double fx, double fy, double fz){
     vx+=fx;
     vy+=fy;
     vz+=fz;
-    
+
 }
-  

@@ -1,5 +1,5 @@
-#include "Particle.h"
-#include "Cluster.h"
+#include "Particle.hpp"
+#include "Cluster.hpp"
 #include <vector>
 using namespace std;
 
@@ -13,4 +13,3 @@ Cluster::Cluster(double x1,double x2, double y1,double y2, double z1,double z2){
     bounds[4] = z1;
     bounds[5] = z2;
   }
-
